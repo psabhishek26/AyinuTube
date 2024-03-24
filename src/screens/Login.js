@@ -1,5 +1,11 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { googleAuth, auth } from "../services/Firebase";
 import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../services/UserContext";
@@ -7,12 +13,15 @@ import { useUser } from "../services/UserContext";
 const Login = () => {
   const navigation = useNavigation();
   const { setUser } = useUser();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log(user.displayName);
+        console.log(user);
         setUser(user);
+        setLoading(false);
         navigation.replace("Home");
       }
     });
@@ -31,11 +40,15 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>AyinuTube</Text>
-      <Pressable onPress={handleGoogleSignIn}>
-        <View style={{ backgroundColor: "#f80204", borderRadius: 50 }}>
-          <Text style={styles.buttonTitle}>Sign in with Google</Text>
-        </View>
-      </Pressable>
+      {loading ? (
+        <ActivityIndicator size="large" color={"#f80204"} />
+      ) : (
+        <Pressable onPress={handleGoogleSignIn}>
+          <View style={{ backgroundColor: "#f80204", borderRadius: 50 }}>
+            <Text style={styles.buttonTitle}>Sign in with Google</Text>
+          </View>
+        </Pressable>
+      )}
     </View>
   );
 };
