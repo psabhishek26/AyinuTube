@@ -1,7 +1,10 @@
 import { View, Image, Text, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { useUser } from "../services/UserContext";
 import YtSortModes from "./YtSortModes";
 export default function YtHeader() {
+  const { user } = useUser();
+  
   return (
     <View>
       <View style={styles.header}>
@@ -9,34 +12,20 @@ export default function YtHeader() {
           source={require("../../assets/bleachprofile.png")}
           style={{ height: 30, width: 50 }}
         />
-        <Text
+        <Text style={styles.title}>AyinuTube</Text>
+        <View
           style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            justifyContent: "center",
-            padding: 10,
-            color: "white",
+            flexDirection: "row",
+            marginLeft: "auto",
+            alignItems: "center",
           }}
         >
-          AyinuTube
-        </Text>
-        <View style={{ flexDirection: "row", marginLeft: "auto" }}>
-          <FontAwesome
-            name="bell"
-            style={{
-              fontSize: 20,
-              marginRight: 18,
-              color: "white",
-            }}
-          />
+          <FontAwesome name="bell" style={styles.icon} />
           <FontAwesome
             name="search"
-            style={{
-              fontSize: 20,
-              marginRight: 18,
-              color: "white",
-            }}
+            style={styles.icon}
           />
+          <Image source={{ uri: user.photoURL }} style={styles.profileImage} />
         </View>
       </View>
       <YtSortModes />
@@ -52,5 +41,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     padding: 5,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "500",
+    justifyContent: "center",
+    padding: 10,
+    color: "white",
+  },
+  icon: {
+    fontSize: 20,
+    marginRight: 18,
+    color: "white",
+  },
+  profileImage: {
+    height: 25,
+    width: 25,
+    borderRadius: 50,
+    marginRight: 15,
   },
 });
