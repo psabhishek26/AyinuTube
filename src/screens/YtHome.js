@@ -1,13 +1,9 @@
 import { View, StyleSheet } from "react-native";
-import YtHeader from "../components/YtHeader";
-import YtSortModes from "../components/YtSortModes";
 import YtFeeds from "../services/YtFeeds";
 
 const YtHome = () => {
   return (
     <View style={styles.container}>
-      <YtHeader />
-      <YtSortModes />
       <YtFeeds onPlayMode={false} />
     </View>
   );
