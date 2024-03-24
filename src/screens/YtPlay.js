@@ -17,7 +17,7 @@ export default function YtPlay({ route }) {
         isLooping
         resizeMode={ResizeMode.CONTAIN}
       />
-      <YtFeeds videoInfo={videoInfo} />
+      <YtFeeds videoInfo={videoInfo} onPlayMode={true}/>
     </View>
   );
 }

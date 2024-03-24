@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, Image, TouchableOpacity, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function YtThumbnail({ item }) {
+export default function YtThumbnail({ item, onPlayMode}) {
   const navigation = useNavigation();
   const [selectedVideo, setSelectedVideo] = useState(null);
   
@@ -41,7 +41,8 @@ export default function YtThumbnail({ item }) {
           </View>
         </View>
       </TouchableOpacity>
-      {selectedVideo && navigation.replace("Video", { videoInfo: item })}
+      {selectedVideo && onPlayMode && navigation.replace("Video", { videoInfo: item })}
+      {selectedVideo && !onPlayMode && navigation.navigate("Video", { videoInfo: item })}
     </View>
   );
 }

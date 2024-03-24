@@ -8,7 +8,7 @@ const YtHome = () => {
     <View style={styles.container}>
       <YtHeader />
       <YtSortModes />
-      <YtFeeds />
+      <YtFeeds onPlayMode={false} />
     </View>
   );
 };
