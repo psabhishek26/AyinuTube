@@ -5,6 +5,7 @@ import { UserProvider } from "./src/services/UserContext";
 import YtPlay from "./src/screens/YtPlay";
 import YtHome from "./src/screens/YtHome";
 import Login from "./src/screens/Login";
+import 'expo-dev-client';
 
 const Stack = createNativeStackNavigator();
 

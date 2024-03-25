@@ -6,22 +6,25 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { googleAuth, auth } from "../services/Firebase";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../services/UserContext";
 
 const Login = () => {
   const navigation = useNavigation();
   const { setUser } = useUser();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  GoogleSignin.configure({
+    webClientId: process.env.EXPO_PUBLIC_FIREBASE_WEB_CLIENT_ID,
+  });
 
   useEffect(() => {
-    setLoading(true);
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth().onAuthStateChanged((user) => {
+      setLoading(false);
       if (user) {
-        console.log(user);
         setUser(user);
-        setLoading(false);
         navigation.replace("Home");
       }
     });
@@ -31,20 +34,30 @@ const Login = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      await auth.signInWithPopup(googleAuth);
+      setLoading(true);
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      return auth().signInWithCredential(googleCredential);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>AyinuTube</Text>
+      <View style={{ flexDirection: "row" }}>
+        <Text style={styles.title}>Ayinu</Text>
+        <Text style={styles.hubTheme}>Tube</Text>
+      </View>
       {loading ? (
-        <ActivityIndicator size="large" color={"#f80204"} />
+        <ActivityIndicator size="large" color={"#f7971d"} />
       ) : (
         <Pressable onPress={handleGoogleSignIn}>
-          <View style={{ backgroundColor: "#f80204", borderRadius: 50 }}>
+          <View style={{ backgroundColor: "#f7971d", borderRadius: 5 }}>
             <Text style={styles.buttonTitle}>Sign in with Google</Text>
           </View>
         </Pressable>
@@ -61,13 +74,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#0f0f0f",
   },
   title: {
-    fontSize: 40,
+    fontSize: 60,
     fontWeight: "bold",
     color: "white",
     marginBottom: 50,
   },
+  hubTheme: {
+    color: "black",
+    backgroundColor: "#f7971d",
+    fontSize: 60,
+    borderRadius: 5,
+    padding: 3,
+    fontWeight: "600",
+    marginTop: 3,
+    height: 90,
+  },
   buttonTitle: {
-    color: "white",
+    color: "black",
     padding: 10,
     fontSize: 20,
   },
