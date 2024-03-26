@@ -6,6 +6,7 @@ import YtPlay from "./src/screens/YtPlay";
 import YtHome from "./src/screens/YtHome";
 import Login from "./src/screens/Login";
 import 'expo-dev-client';
+import About from "./src/screens/About";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Home" component={YtHome} />
             <Stack.Screen name="Video" component={YtPlay} />
+            <Stack.Screen name="About" component={About} options={{ headerShown: true}}/>
           </Stack.Navigator>
         </NavigationContainer>
       </View>
