@@ -1,18 +1,18 @@
-import { View, Image, Text, StyleSheet } from "react-native";
+import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useUser } from "../services/UserContext";
 import YtSortModes from "./YtSortModes";
+import { useNavigation } from "@react-navigation/native";
+
 export default function YtHeader() {
   const { user } = useUser();
-  
+  const navigation = useNavigation();
+
   return (
     <View>
       <View style={styles.header}>
-        <Image
-          source={require("../../assets/bleachprofile.png")}
-          style={{ height: 30, width: 50 }}
-        />
-        <Text style={styles.title}>AyinuTube</Text>
+        <Text style={styles.title}>Ayinu</Text>
+        <Text style={styles.hubTheme}>Tube</Text>
         <View
           style={{
             flexDirection: "row",
@@ -21,11 +21,13 @@ export default function YtHeader() {
           }}
         >
           <FontAwesome name="bell" style={styles.icon} />
-          <FontAwesome
-            name="search"
-            style={styles.icon}
-          />
-          <Image source={{ uri: user.photoURL }} style={styles.profileImage} />
+          <FontAwesome name="search" style={styles.icon} />
+          <TouchableOpacity onPress={() => navigation.navigate("About")}>
+            <Image
+              source={{ uri: user.photoURL }}
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <YtSortModes />
@@ -59,5 +61,14 @@ const styles = StyleSheet.create({
     width: 25,
     borderRadius: 50,
     marginRight: 15,
+  },
+  hubTheme: {
+    color: "black",
+    backgroundColor: "#f7971d",
+    borderRadius: 2,
+    padding: 3,
+    marginLeft: -8,
+    fontWeight: "600",
+    marginTop: 3,
   },
 });
