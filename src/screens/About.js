@@ -1,17 +1,11 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 import { useUser } from "../services/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
 export default function About() {
-  const { user } = useUser();
+  const { user, googleId } = useUser();
   const navigation = useNavigation();
 
   const handleSignOut = async () => {
@@ -26,10 +20,10 @@ export default function About() {
   return (
     <View style={styles.conatiner}>
       <View style={styles.userInfoContainer}>
-        <Image source={{ uri: user.photoURL }} style={styles.profileImage} />
+        <Image source={{ uri: googleId.photoURL }} style={styles.profileImage} />
         <View>
-          <Text style={styles.name}>{user.displayName}</Text>
-          <Text style={styles.email}>{user.email}</Text>
+          <Text style={styles.name}>{googleId.displayName}</Text>
+          <Text style={styles.email}>{googleId.email}</Text>
         </View>
       </View>
       <View style={styles.accountInfo}>
@@ -40,7 +34,7 @@ export default function About() {
             size={13}
             style={{ marginRight: 7 }}
           />
-          <Text style={{ color: "#e5e5e5", fontSize: 12 }}>Likes | 2000</Text>
+          <Text style={{ color: "#e5e5e5", fontSize: 12 }}>Likes | {user.totalLikes}</Text>
         </View>
 
         <View style={styles.tab}>
@@ -51,7 +45,7 @@ export default function About() {
             style={{ marginRight: 7 }}
           />
           <Text style={{ color: "#e5e5e5", fontSize: 12 }}>
-            Dislikes | 5000
+            Dislikes | {user.totalDislikes}
           </Text>
         </View>
 
@@ -62,7 +56,7 @@ export default function About() {
             size={13}
             style={{ marginRight: 7 }}
           />
-          <Text style={{ color: "#e5e5e5", fontSize: 12 }}>Views | 5000</Text>
+          <Text style={{ color: "#e5e5e5", fontSize: 12 }}>Views | {user.totalViews}</Text>
         </View>
       </View>
       <View
@@ -70,13 +64,15 @@ export default function About() {
           justifyContent: "space-around",
           flexDirection: "row",
           padding: 10,
-          marginVertical: 5,
+          marginVertical: 20,
         }}
       >
-        <View style={styles.buttonConatiner}>
-          <FontAwesome name="upload" size={15} />
-          <Text style={styles.buttonText}>Upload</Text>
-        </View>
+        <TouchableOpacity onPress={() => navigation.navigate("Upload")}>
+          <View style={styles.buttonConatiner}>
+            <FontAwesome name="upload" size={15} />
+            <Text style={styles.buttonText}>Upload</Text>
+          </View>
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={handleSignOut}>
           <View style={styles.buttonConatiner}>
