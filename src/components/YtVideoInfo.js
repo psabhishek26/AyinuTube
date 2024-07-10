@@ -1,6 +1,7 @@
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
+import { getTimeDifference, getTitleDesc } from "../utils/getVideoInfo";
 
 export default function YtVideoInfo({ videoInfo }) {
   const [showDesc, setShowDesc] = useState(0);
@@ -8,17 +9,35 @@ export default function YtVideoInfo({ videoInfo }) {
   return (
     <View>
       <View style={styles.infoCaontainer}>
-        <Text style={{ color: "#f2f2ed", fontSize: 20 }}>{videoInfo.name}</Text>
-        <TouchableOpacity onPress={() => setShowDesc(!showDesc)}>
-          <Text style={{ color: "#acaba7" }}>168k views 3d ago ..more</Text>
-        </TouchableOpacity>
+        <Text style={{ color: "#f2f2ed", fontSize: 20 }}>
+          {getTitleDesc(videoInfo.title)[0]}
+        </Text>
+        {showDesc ? (
+          <TouchableOpacity onPress={() => setShowDesc(!showDesc)}>
+            <View style={styles.description}>
+              <Text style={styles.descTitle}>Description</Text>
+              <Text style={{ color: "#acaba7", marginBottom: 5 }}>
+                168k views {getTimeDifference(videoInfo.uploadedAt)}
+              </Text>
+              <Text style={{ color: "#f2f2ed" }}>
+                {getTitleDesc(videoInfo.title)[1]}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={() => setShowDesc(!showDesc)}>
+            <Text style={{ color: "#acaba7" }}>
+              168k views {getTimeDifference(videoInfo.uploadedAt)} ..more
+            </Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.profileInfo}>
           <Image
-            source={require("../../assets/bleachprofile.png")}
+            source={{ uri: videoInfo.tgUserProfileImage }}
             style={styles.imgProfile}
           />
           <Text style={{ color: "#ebebeb", fontSize: 16, marginLeft: 12 }}>
-            Greg Doucette
+            {videoInfo.tgUserName}
           </Text>
           <Text style={{ color: "#999798", fontSize: 12, marginLeft: 12 }}>
             2.06M
@@ -90,7 +109,7 @@ export default function YtVideoInfo({ videoInfo }) {
 const styles = StyleSheet.create({
   infoCaontainer: {
     padding: 10,
-    marginTop: -20,
+    marginTop: -10,
   },
   profileInfo: {
     flexDirection: "row",
@@ -108,5 +127,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 50,
+  },
+  description: {
+    marginVertical: 10,
+    marginHorizontal: 5,
+    borderRadius: 5,
+    padding: 10,
+    backgroundColor: "#272727",
+  },
+  descTitle: {
+    fontWeight: "600",
+    fontSize: 15,
+    color: "white",
+    marginTop: -5,
   },
 });
