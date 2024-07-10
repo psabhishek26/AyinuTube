@@ -1,10 +1,78 @@
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getTimeDifference, getTitleDesc } from "../utils/getVideoInfo";
+import { useUser } from "../services/UserContext";
+import database from "@react-native-firebase/database";
 
 export default function YtVideoInfo({ videoInfo }) {
-  const [showDesc, setShowDesc] = useState(0);
+  const { user } = useUser();
+  const [showDesc, setShowDesc] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [dislikeCount, setDislikeCount] = useState(0);
+  const [userLiked, setUserLiked] = useState(false);
+  const [userDisliked, setUserDisliked] = useState(false);
+
+  useEffect(() => {
+    const likesArray = videoInfo.likes ? videoInfo.likes.split(",") : [];
+    const dislikesArray = videoInfo.dislikes
+      ? videoInfo.dislikes.split(",")
+      : [];
+    setLikeCount(likesArray.length);
+    setDislikeCount(dislikesArray.length);
+    setUserLiked(likesArray.includes(user.userId));
+    setUserDisliked(dislikesArray.includes(user.userId));
+  }, []);
+
+  const handleLike = () => {
+    const videoRef = database().ref(`videos/${videoInfo.id}`);
+    videoRef.transaction((video) => {
+      if (video) {
+        let likesArray = video.likes ? video.likes.split(",") : [];
+        let dislikesArray = video.dislikes ? video.dislikes.split(",") : [];
+
+        if (likesArray.includes(user.userId)) {
+          likesArray = likesArray.filter((id) => id !== user.userId);
+          setUserLiked(false);
+        } else {
+          likesArray.push(user.userId);
+          dislikesArray = dislikesArray.filter((id) => id !== user.userId);
+          setUserLiked(true);
+          setUserDisliked(false);
+        }
+        video.likes = likesArray.join(",");
+        video.dislikes = dislikesArray.join(",");
+        setLikeCount(likesArray.length);
+        setDislikeCount(dislikesArray.length);
+      }
+      return video;
+    });
+  };
+
+  const handleDislike = () => {
+    const videoRef = database().ref(`videos/${videoInfo.id}`);
+    videoRef.transaction((video) => {
+      if (video) {
+        let likesArray = video.likes ? video.likes.split(",") : [];
+        let dislikesArray = video.dislikes ? video.dislikes.split(",") : [];
+
+        if (dislikesArray.includes(user.userId)) {
+          dislikesArray = dislikesArray.filter((id) => id !== user.userId);
+          setUserDisliked(false);
+        } else {
+          dislikesArray.push(user.userId);
+          likesArray = likesArray.filter((id) => id !== user.userId);
+          setUserDisliked(true);
+          setUserLiked(false);
+        }
+        video.likes = likesArray.join(",");
+        video.dislikes = dislikesArray.join(",");
+        setLikeCount(likesArray.length);
+        setDislikeCount(dislikesArray.length);
+      }
+      return video;
+    });
+  };
 
   return (
     <View>
@@ -62,25 +130,50 @@ export default function YtVideoInfo({ videoInfo }) {
           marginBottom: 12,
         }}
       >
-        <View style={styles.tabButton}>
-          <FontAwesome
-            name="thumbs-up"
-            color="#9b9b9b"
-            size={13}
-            style={{ marginRight: 7 }}
-          />
-          <Text style={{ color: "#e5e5e5", fontSize: 13 }}>Like</Text>
-        </View>
+        <TouchableOpacity onPress={handleLike}>
+          <View
+            style={{
+              ...styles.tabButton,
+              backgroundColor: userLiked ? "#f1f1f1" : "#1a1a1a",
+            }}
+          >
+            <FontAwesome
+              name="thumbs-up"
+              color={userLiked ? "#1a1a1a" : "#9b9b9b"}
+              size={13}
+              style={{ marginRight: 7 }}
+            />
+            <Text
+              style={{ color: userLiked ? "#1a1a1a" : "#e5e5e5", fontSize: 13 }}
+            >
+              Like | {likeCount}k
+            </Text>
+          </View>
+        </TouchableOpacity>
 
-        <View style={styles.tabButton}>
-          <FontAwesome
-            name="thumbs-down"
-            color="#9b9b9b"
-            size={13}
-            style={{ marginRight: 7 }}
-          />
-          <Text style={{ color: "#e5e5e5", fontSize: 13 }}>Dislike</Text>
-        </View>
+        <TouchableOpacity onPress={handleDislike}>
+          <View
+            style={{
+              ...styles.tabButton,
+              backgroundColor: userDisliked ? "#f1f1f1" : "#1a1a1a",
+            }}
+          >
+            <FontAwesome
+              name="thumbs-down"
+              color={userDisliked ? "#1a1a1a" : "#9b9b9b"}
+              size={13}
+              style={{ marginRight: 7 }}
+            />
+            <Text
+              style={{
+                color: userDisliked ? "#1a1a1a" : "#e5e5e5",
+                fontSize: 13,
+              }}
+            >
+              Dislike | {dislikeCount}k
+            </Text>
+          </View>
+        </TouchableOpacity>
 
         <View style={styles.tabButton}>
           <FontAwesome
