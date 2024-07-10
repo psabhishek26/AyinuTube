@@ -22,15 +22,17 @@ const Login = () => {
   });
 
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged((user) => {
+    const handleAuthStateChanged = async (user) => {
       setLoading(false);
       if (user) {
         setGoogleId(user);
-        setUser(fetchUserData(user));
+        const userData = await fetchUserData(user);
+        setUser(userData);
         navigation.replace("Home");
       }
-    });
+    };
 
+    const unsubscribe = auth().onAuthStateChanged(handleAuthStateChanged);
     return unsubscribe;
   }, []);
 
@@ -48,12 +50,14 @@ const Login = () => {
 
   const insertUserData = async (user) => {
     const fetchedData = await fetchUserData(user);
+    const userId = userIdGen(user);
     let userData;
     if (!fetchedData) {
       userData = {
         email: user.email,
         displayName: user.displayName,
-        uid: user.uid,
+        gUid: user.uid,
+        userId: userId,
         totalViews: 0,
         totalLikes: 0,
         totalDislikes: 0,
