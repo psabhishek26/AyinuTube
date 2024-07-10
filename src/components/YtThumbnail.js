@@ -7,6 +7,9 @@ export default function YtThumbnail({ item, onPlayMode}) {
   const navigation = useNavigation();
   const [selectedVideo, setSelectedVideo] = useState(null);
   
+  const viewsArray = item.views ? item.views.split(",") : [];
+  const viewCount = viewsArray.length;
+  
   return (
     <View>
       <TouchableOpacity onPress={() => setSelectedVideo(item)}>
@@ -36,7 +39,7 @@ export default function YtThumbnail({ item, onPlayMode}) {
               <Text
                 style={{ fontWeight: "100", fontSize: 12, color: "#a0a0a0" }}
               >
-                1M Views {getTimeDifference(item.uploadedAt)}
+                {viewCount}M Views {getTimeDifference(item.uploadedAt)}
               </Text>
             </View>
           </View>

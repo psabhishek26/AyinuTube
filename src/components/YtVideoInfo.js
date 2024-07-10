@@ -8,20 +8,35 @@ import database from "@react-native-firebase/database";
 export default function YtVideoInfo({ videoInfo }) {
   const { user } = useUser();
   const [showDesc, setShowDesc] = useState(false);
+  const [viewCount, setViewCount] = useState(0);
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
   const [userLiked, setUserLiked] = useState(false);
   const [userDisliked, setUserDisliked] = useState(false);
 
   useEffect(() => {
+    const viewsArray = videoInfo.views ? videoInfo.views.split(",") : [];
     const likesArray = videoInfo.likes ? videoInfo.likes.split(",") : [];
     const dislikesArray = videoInfo.dislikes
       ? videoInfo.dislikes.split(",")
       : [];
+    setViewCount(viewsArray.length);
     setLikeCount(likesArray.length);
     setDislikeCount(dislikesArray.length);
     setUserLiked(likesArray.includes(user.userId));
     setUserDisliked(dislikesArray.includes(user.userId));
+
+    const updateViews = async () => {
+      if (!viewsArray.includes(user.userId)) {
+        viewsArray.push(user.userId);
+        const updatedViews = viewsArray.join(",");
+
+        const videoRef = database().ref(`videos/${videoInfo.id}`);
+        await videoRef.update({ views: updatedViews });
+      }
+    };
+
+    updateViews();
   }, []);
 
   const handleLike = () => {
@@ -85,7 +100,7 @@ export default function YtVideoInfo({ videoInfo }) {
             <View style={styles.description}>
               <Text style={styles.descTitle}>Description</Text>
               <Text style={{ color: "#acaba7", marginBottom: 5 }}>
-                168k views {getTimeDifference(videoInfo.uploadedAt)}
+                {viewCount}M views {getTimeDifference(videoInfo.uploadedAt)}
               </Text>
               <Text style={{ color: "#f2f2ed" }}>
                 {getTitleDesc(videoInfo.title)[1]}
@@ -95,7 +110,7 @@ export default function YtVideoInfo({ videoInfo }) {
         ) : (
           <TouchableOpacity onPress={() => setShowDesc(!showDesc)}>
             <Text style={{ color: "#acaba7" }}>
-              168k views {getTimeDifference(videoInfo.uploadedAt)} ..more
+              {viewCount}M views {getTimeDifference(videoInfo.uploadedAt)} ..more
             </Text>
           </TouchableOpacity>
         )}
