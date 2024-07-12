@@ -42,6 +42,7 @@ export default function SearchBar({ submitted }) {
         <TextInput
           placeholder="Search AyinuTube"
           placeholderTextColor="#acaba7"
+          autoFocus={true}
           style={styles.textInput}
           value={searchInput}
           onChangeText={handleInputChange}
