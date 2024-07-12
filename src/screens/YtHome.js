@@ -4,7 +4,7 @@ import YtFeeds from "../services/YtFeeds";
 const YtHome = () => {
   return (
     <View style={styles.container}>
-      <YtFeeds onPlayMode={false} />
+      <YtFeeds onPlayMode={false} onHome={true} />
     </View>
   );
 };

@@ -5,7 +5,7 @@ import YtSortModes from "./YtSortModes";
 import { useNavigation } from "@react-navigation/native";
 
 export default function YtHeader() {
-  const { user } = useUser();
+  const { googleId } = useUser();
   const navigation = useNavigation();
 
   return (
@@ -21,10 +21,12 @@ export default function YtHeader() {
           }}
         >
           <FontAwesome name="bell" style={styles.icon} />
-          <FontAwesome name="search" style={styles.icon} />
+          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+            <FontAwesome name="search" style={styles.icon} />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("About")}>
             <Image
-              source={{ uri: user.photoURL }}
+              source={{ uri: googleId.photoURL }}
               style={styles.profileImage}
             />
           </TouchableOpacity>
