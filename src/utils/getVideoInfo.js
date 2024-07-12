@@ -29,3 +29,12 @@ export function getTitleDesc(title) {
   }
   return result;
 }
+
+export const limitedTitle = (text, wordLimit) => {
+  const title = getTitleDesc(text)[0];
+  const words = title.split(" ");
+  if (words.length > wordLimit) {
+    return words.slice(0, wordLimit).join(" ") + "...";
+  }
+  return title;
+};
