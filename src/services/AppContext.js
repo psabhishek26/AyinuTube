@@ -8,6 +8,7 @@ export const AppProvider = ({ children }) => {
   const [videos, setVideos] = useState(null);
   const [filteredVideos, setFilteredVideos] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [commentBox, setCommentBox] = useState(false);
 
   return (
     <AppContext.Provider
@@ -18,6 +19,8 @@ export const AppProvider = ({ children }) => {
         setSearchInput,
         filteredVideos,
         setFilteredVideos,
+        commentBox,
+        setCommentBox,
       }}
     >
       {children}

@@ -17,7 +17,7 @@ export default function YtThumbnail({ item, onPlayMode }) {
           <Image source={{ uri: item.thumbnailUrl }} style={styles.image} />
           <View style={styles.subContainer}>
             <Image
-              source={{ uri: item.tgUserProfileImage }}
+              source={{ uri: item.profilePhotoUrl }}
               style={styles.profileImage}
             />
             <View style={{ marginLeft: 10, width: "100%" }}>

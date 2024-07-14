@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getTimeDifference, getTitleDesc } from "../utils/getVideoInfo";
 import { useUser } from "../services/UserContext";
 import database from "@react-native-firebase/database";
+import CommentsHandler from "./CommentsHandler";
 
 export default function YtVideoInfo({ videoInfo }) {
   const { user } = useUser();
@@ -116,11 +117,11 @@ export default function YtVideoInfo({ videoInfo }) {
         )}
         <View style={styles.profileInfo}>
           <Image
-            source={{ uri: videoInfo.tgUserProfileImage }}
+            source={{ uri: videoInfo.profilePhotoUrl }}
             style={styles.imgProfile}
           />
           <Text style={{ color: "#ebebeb", fontSize: 16, marginLeft: 12 }}>
-            {videoInfo.tgUserName}
+            {videoInfo.username}
           </Text>
           <Text style={{ color: "#999798", fontSize: 12, marginLeft: 12 }}>
             2.06M
@@ -210,6 +211,7 @@ export default function YtVideoInfo({ videoInfo }) {
           <Text style={{ color: "#e5e5e5", fontSize: 13 }}>Download</Text>
         </View>
       </View>
+      <CommentsHandler videoInfo={videoInfo} />
     </View>
   );
 }

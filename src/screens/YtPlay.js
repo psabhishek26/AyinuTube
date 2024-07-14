@@ -1,11 +1,18 @@
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { Video, ResizeMode } from "expo-av";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import YtFeeds from "../services/YtFeeds";
+import { useApp } from "../services/AppContext";
+import CommentsHandler from "../components/CommentsHandler";
 
 export default function YtPlay({ route }) {
   const { videoInfo } = route.params;
+  const { commentBox, setCommentBox } = useApp();
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setCommentBox(false);
+  }, []);
 
   const handleLoad = () => {
     setIsLoading(false);
@@ -32,7 +39,11 @@ export default function YtPlay({ route }) {
           onLoad={handleLoad}
         />
       </View>
-      <YtFeeds videoInfo={videoInfo} onPlayMode={true} />
+      {commentBox ? (
+        <CommentsHandler videoInfo={videoInfo} />
+      ) : (
+        <YtFeeds videoInfo={videoInfo} onPlayMode={true} />
+      )}
     </View>
   );
 }
